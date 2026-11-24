@@ -1,0 +1,67 @@
+# PlayerCannon Konfiguration  (nach Änderungen: /playercannon reload)
+
+# Wohin die Pearls fliegen:
+#   CROSSHAIR = Pearls spawnen hoch über dir und landen in einem Kreis um den Punkt,
+#               auf den dein Crosshair zeigt (Einstellungen im Abschnitt "crosshair")
+#   OWNER     = Pearls erscheinen kurz über dir und teleportieren die Spieler zu dir
+#   HOOK      = Pearls fliegen zur Position des Angel-Hooks (hier gilt max-distance)
+# CROSSHAIR und OWNER funktionieren egal wo die Spieler sind (auch andere Welten).
+# Im Spiel umschaltbar mit /playercannon mode <crosshair|me|hook>
+target-mode: CROSSHAIR
+
+crosshair:
+  # Höhe über der Angel (dir), in der die Pearls spawnen. Bei einer Decke darüber wird sie kleiner.
+  spawn-height: 200.0
+  # Radius des Kreises (Blöcke) um den Punkt, auf den du zielst
+  radius: 5.0
+  # RING   = Pearls verteilen sich gleichmäßig auf dem Kreisrand
+  # RANDOM = Pearls landen zufällig innerhalb der Kreisfläche
+  pattern: RING
+  # Maximale Entfernung (Blöcke), in der dein Crosshair einen Block findet
+  range: 100.0
+
+# Nur OWNER-Modus: Radius (Blöcke) um dich, in dem die Pearls erscheinen
+sky-radius: 5.0
+# Nur OWNER-Modus: Höhe (Blöcke) über dir, in der die Pearls erscheinen
+sky-height: 10.0
+
+# Wartezeit zwischen zwei Schüssen pro Spieler (Millisekunden)
+cooldown-ms: 1000
+
+# Abstand zwischen den einzelnen Pearls in Ticks (20 Ticks = 1 Sekunde). 0 = alle gleichzeitig
+launch-delay-ticks: 2
+
+# Nur HOOK-Modus: Maximale Entfernung (Blöcke) zwischen Schütze und Hook
+max-distance: 150
+
+# true = kein Enderpearl-Schaden beim Aufprall (Teleport ohne Fallschaden)
+no-pearl-damage: true
+
+# Partikel-Spur der Pearls im Flug
+trail-particles: true
+
+# Sounds & Effekte (Start, Ziel, Teleport)
+effects: true
+
+# Verlinkte Spieler bekommen eine Actionbar-Nachricht, wenn sie abgefeuert werden
+notify-linked: true
+
+# Name der Angel (Farbcodes mit &)
+rod-name: "&d&lPlayer Cannon"
+rod-lore:
+  - "&7Auswerfen & einholen:"
+  - "&7Verlinkte Spieler fliegen zum Hook."
+
+# Effekte für verlinkte Spieler (damit sie sofort fight ready sind)
+buffs:
+  # Effekte an/aus
+  enabled: true
+  # Wie lange die Effekte dauern (Sekunden)
+  duration-seconds: 600
+  # Level (2 = Strength II / Speed II). 0 = Effekt aus
+  strength-level: 2
+  speed-level: 2
+  # Fire Resistance geben
+  fire-resistance: true
+  # true = Effekte schon direkt beim Verlinken geben, false = erst beim Abfeuern
+  apply-on-link: false

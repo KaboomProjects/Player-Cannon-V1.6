@@ -1,0 +1,15 @@
+name: PlayerCannon
+version: 1.5.0
+main: de.playercannon.PlayerCannon
+api-version: '1.21'
+description: Enderpearl Player Cannon
+commands:
+  playercannon:
+    description: Player Cannon Hauptbefehl
+    usage: /playercannon <link|unlink|list|clear|rod|reload>
+    aliases: [pc, cannon]
+    permission: playercannon.use
+permissions:
+  playercannon.use:
+    description: Erlaubt die Nutzung der Player Cannon
+    default: op

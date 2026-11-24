@@ -1,0 +1,67 @@
+name: Build PlayerCannon
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Find project folder (pom.xml)
+        id: proj
+        run: |
+          POM=$(find . -name pom.xml -not -path '*/target/*' | head -n 1)
+          if [ -z "$POM" ]; then
+            echo "Keine pom.xml gefunden! Liegt das Projekt im Repository?"
+            exit 1
+          fi
+          DIR=$(dirname "$POM")
+          echo "Projekt gefunden in: $DIR"
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build with Maven
+        working-directory: ${{ steps.proj.outputs.dir }}
+        run: mvn -B clean package
+
+      - name: Verify jar
+        working-directory: ${{ steps.proj.outputs.dir }}
+        run: |
+          unzip -l target/PlayerCannon.jar > jar-content.txt
+          cat jar-content.txt
+          grep -q "plugin.yml" jar-content.txt
+          grep -q "de/playercannon/PlayerCannon.class" jar-content.txt
+
+      - name: Upload artifact (ist eine .zip, die .jar liegt darin)
+        uses: actions/upload-artifact@v4
+        with:
+          name: PlayerCannon
+          path: ${{ steps.proj.outputs.dir }}/target/PlayerCannon.jar
+          if-no-files-found: error
+
+      - name: Create release with direct jar
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('build-{0}', github.run_number) }}
+          target_commitish: ${{ github.sha }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('Build {0}', github.run_number) }}
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          files: ${{ steps.proj.outputs.dir }}/target/PlayerCannon.jar
+          generate_release_notes: true
